@@ -299,6 +299,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 		/// <inheritdoc/>
 		public override void ReplaceSelectionWithText(string newText)
 		{
+			Logging.Log($"sel replace  :{textArea.Selection}");
+
 			if (newText == null)
 				throw new ArgumentNullException("newText");
 			using (textArea.Document.RunUpdate()) {
@@ -309,6 +311,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 				int firstInsertionLength = 0;
 				int editOffset = Math.Min(topLeftOffset, bottomRightOffset);
 				TextViewPosition pos;
+				Logging.Log($"sel replace  :{textArea.Selection}");
+
 				if (NewLineFinder.NextNewLine(newText, 0) == SimpleSegment.Invalid) {
 					// insert same text into every line
 					foreach (SelectionSegment lineSegment in this.Segments.Reverse()) {
@@ -316,11 +320,16 @@ namespace ICSharpCode.AvalonEdit.Editing
 						totalInsertionLength += insertionLength;
 						firstInsertionLength = insertionLength;
 					}
-
+					Logging.Log($"sel after del:{textArea.Selection}");
+					Logging.Log($"startLine:{startLine}, endLine:{endLine}");
 					int newEndOffset = editOffset + totalInsertionLength;
 					pos = new TextViewPosition(document.GetLocation(editOffset + firstInsertionLength));
-
+					//Logging.Log($"startLine:{startLine}, endLine:{endLine}, pos:{pos}");
 					textArea.Selection = new RectangleSelection(textArea, pos, Math.Max(startLine, endLine), GetXPos(textArea, pos));
+					//Logging.Log($"startLine:{startLine}, endLine:{endLine}, pos:{pos}, ");					
+					Logging.Log($"sel       new:{ textArea.Selection}");
+					Logging.Log($"Caret.Position3:{textArea.Caret.Position}");
+
 				} else {
 					string[] lines = newText.Split(NewLineFinder.NewlineStrings, segments.Count, StringSplitOptions.None);
 					int line = Math.Min(startLine, endLine);
@@ -332,6 +341,8 @@ namespace ICSharpCode.AvalonEdit.Editing
 					textArea.ClearSelection();
 				}
 				textArea.Caret.Position = textArea.TextView.GetPosition(new Point(GetXPos(textArea, pos), textArea.TextView.GetVisualTopByDocumentLine(Math.Max(startLine, endLine)))).GetValueOrDefault();
+				Logging.Log($"Caret.Position4:{textArea.Caret.Position}\r\n");
+
 			}
 		}
 
@@ -407,7 +418,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		{
 			// It's possible that ToString() gets called on old (invalid) selections, e.g. for "change from... to..." debug message
 			// make sure we don't crash even when the desired locations don't exist anymore.
-			return string.Format("[RectangleSelection {0} {1} {2} to {3} {4} {5}]", startLine, topLeftOffset, startXPos, endLine, bottomRightOffset, endXPos);
+			return string.Format("[RectangleSelection stLn:{0} topLeftOffset:{1} startXPos:{2} to endLn:{3} bottomRightOffset:{4} endXPos:{5}]", startLine, topLeftOffset, startXPos, endLine, bottomRightOffset, endXPos);
 		}
 	}
 }
