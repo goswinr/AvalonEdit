@@ -263,28 +263,46 @@ namespace ICSharpCode.AvalonEdit.Editing
 						// thus we need to validate endPos before using it in the selection.
 						if (endPos.Line < 1 || endPos.Column < 1)
 							endPos = new TextViewPosition(Math.Max(endPos.Line, 1), Math.Max(endPos.Column, 1));
-						
-						// Don't do anything if the number of lines of a rectangular selection would be changed by the deletion.
-						if (textArea.Selection is RectangleSelection && startPos.Line != endPos.Line)
-							return;
-						
-						//Logging.Log($"Caret.Position1:{textArea.Caret.Position}");
 
 
-						// Don't select the text to be deleted; just reuse the ReplaceSelectionWithText logic
-						// Reuse the existing selection, so that we continue using the same logic
-						Logging.Log($"sel current  :{textArea.Selection}");
+						if (textArea.Selection is RectangleSelection) {
+							if (startPos.Line != endPos.Line) // Don't do anything if the number of lines of a rectangular selection would be changed by the deletion.
+								{ return; } 
+							else { //special case for empty vertical cartes:
+								int caretLn = textArea.Caret.Position.Line;
+								using (textArea.Document.RunUpdate()) {
+									kgkhgl;kjh
+									
+									
+									foreach (SelectionSegment segm in textArea.Selection.Segments) {
+										
+										}
+								}
 
-						Logging.Log($"new endPos:{endPos}");
-						Selection selToDel = textArea.Selection.StartSelectionOrSetEndpoint(startPos, endPos);
-						Logging.Log($"sel expanded :{selToDel}");
-						//Logging.Log($"Caret.Position2:{textArea.Caret.Position}");
-						selToDel.ReplaceSelectionWithText(string.Empty); // this also moves the caret to end of rect block and sometimes to the second last line on odd font sizes
-						//Logging.Log($"Caret.Position3:{textArea.Caret.Position}\r\n");
+							
+							
+							};
+						}
+						else {
+
+							//Logging.Log($"Caret.Position1:{textArea.Caret.Position}");
+
+
+							// Don't select the text to be deleted; just reuse the ReplaceSelectionWithText logic
+							// Reuse the existing selection, so that we continue using the same logic
+							Logging.Log($"sel current  :{textArea.Selection}");
+
+							Logging.Log($"new endPos:{endPos}");
+							Selection selToDel = textArea.Selection.StartSelectionOrSetEndpoint(startPos, endPos);
+							Logging.Log($"sel expanded :{selToDel}");
+							//Logging.Log($"Caret.Position2:{textArea.Caret.Position}");
+							selToDel.ReplaceSelectionWithText(string.Empty); // this also moves the caret to end of rect block and sometimes to the second last line on odd font sizes
+																			 //Logging.Log($"Caret.Position3:{textArea.Caret.Position}\r\n");
+						}
 
 					} else {
 						textArea.RemoveSelectedText();
-					}
+						}
 
 					textArea.Caret.BringCaretToView();
 					args.Handled = true;
