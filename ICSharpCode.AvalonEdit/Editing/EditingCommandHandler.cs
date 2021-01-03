@@ -273,11 +273,11 @@ namespace ICSharpCode.AvalonEdit.Editing
 
 						// Don't select the text to be deleted; just reuse the ReplaceSelectionWithText logic
 						// Reuse the existing selection, so that we continue using the same logic
-						Logging.Log($"sel current  :{textArea.Selection}");
+						Logging.Log($"OnDelete:sel current  :{textArea.Selection}");
 
-						Logging.Log($"new endPos:{endPos}");
+						Logging.Log($"OnDelete:new endPos:{endPos}");
 						Selection selToDel = textArea.Selection.StartSelectionOrSetEndpoint(startPos, endPos);
-						Logging.Log($"sel expanded :{selToDel}");
+						Logging.Log($"OnDelete:sel expanded :{selToDel}");
 						//Logging.Log($"Caret.Position2:{textArea.Caret.Position}");
 						selToDel.ReplaceSelectionWithText(string.Empty); // this also moves the caret to end of rect block and sometimes to the second last line on odd font sizes
 						//Logging.Log($"Caret.Position3:{textArea.Caret.Position}\r\n");
